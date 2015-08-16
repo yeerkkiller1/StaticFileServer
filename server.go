@@ -1,12 +1,22 @@
 package main
 
 import (
-    "net/http"
+  "fmt"
+  "net/http"
+  "flag"
+  "strconv"
 )
 
 func main() {
-	fs := http.FileServer(http.Dir("./"))
-  	http.Handle("/", fs)
+  port := *flag.Int("port", 7070, "The port the server will listen on.")
 
-    http.ListenAndServe(":8080", nil)
+  fmt.Println("Listening on port", port)
+
+  fs := http.FileServer(http.Dir("./"))
+  http.Handle("/", fs)
+
+  err := http.ListenAndServe(":" + strconv.Itoa(port), nil)
+  if err != nil {
+    fmt.Printf("error: %s\n", err)
+  }
 }
